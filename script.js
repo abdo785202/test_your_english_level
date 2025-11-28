@@ -17,6 +17,7 @@ const levelDescription = document.getElementById('level-description');
 let currentQuestionIndex = 0;
 let score = 0;
 let selectedOptionIndex = null;
+let quizQuestions = [];
 
 // Level Descriptions
 const levelDescriptions = {
@@ -39,19 +40,34 @@ function startQuiz() {
     quizScreen.classList.add('active');
     currentQuestionIndex = 0;
     score = 0;
+    
+    // Shuffle questions
+    quizQuestions = [...questions];
+    shuffleArray(quizQuestions);
+    
     loadQuestion();
 }
 
 function loadQuestion() {
-    const currentQuestion = questions[currentQuestionIndex];
+    const currentQuestion = quizQuestions[currentQuestionIndex];
 
     // Update UI
     questionText.textContent = currentQuestion.question;
     currentQuestionNum.textContent = currentQuestionIndex + 1;
 
     // Update Progress Bar
-    const progress = ((currentQuestionIndex) / questions.length) * 100;
+    const progress = ((currentQuestionIndex) / quizQuestions.length) * 100;
     progressBar.style.width = `${progress}%`;
+
+    // Animation
+    const container = document.querySelector('.question-container');
+    container.classList.remove('fade-out');
+    container.classList.add('fade-in');
+    
+    // Remove fade-in class after animation to allow clean fade-out later
+    setTimeout(() => {
+        container.classList.remove('fade-in');
+    }, 400);
 
     // Clear and render options
     optionsContainer.innerHTML = '';
@@ -80,18 +96,30 @@ function selectOption(index, card) {
 
 function handleNextQuestion() {
     // Check answer
-    const currentQuestion = questions[currentQuestionIndex];
+    const currentQuestion = quizQuestions[currentQuestionIndex];
     if (selectedOptionIndex === currentQuestion.answer) {
         score++;
     }
 
     currentQuestionIndex++;
 
-    if (currentQuestionIndex < questions.length) {
-        // Add a small delay/fade effect if desired, but for now direct transition
-        loadQuestion();
+    if (currentQuestionIndex < quizQuestions.length) {
+        // Transition effect
+        const container = document.querySelector('.question-container');
+        container.classList.add('fade-out');
+        
+        setTimeout(() => {
+            loadQuestion();
+        }, 400);
     } else {
         showResults();
+    }
+}
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
     }
 }
 
