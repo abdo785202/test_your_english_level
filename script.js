@@ -12,6 +12,7 @@ const progressBar = document.getElementById('progress-bar');
 const finalLevel = document.getElementById('final-level');
 const finalScore = document.getElementById('final-score');
 const levelDescription = document.getElementById('level-description');
+const themeToggle = document.getElementById('theme-toggle');
 
 // State
 let currentQuestionIndex = 0;
@@ -33,6 +34,7 @@ const levelDescriptions = {
 startBtn.addEventListener('click', startQuiz);
 nextBtn.addEventListener('click', handleNextQuestion);
 restartBtn.addEventListener('click', restartQuiz);
+themeToggle.addEventListener('click', toggleTheme);
 
 // Functions
 function startQuiz() {
@@ -40,11 +42,11 @@ function startQuiz() {
     quizScreen.classList.add('active');
     currentQuestionIndex = 0;
     score = 0;
-    
+
     // Shuffle questions
     quizQuestions = [...questions];
     shuffleArray(quizQuestions);
-    
+
     loadQuestion();
 }
 
@@ -63,7 +65,7 @@ function loadQuestion() {
     const container = document.querySelector('.question-container');
     container.classList.remove('fade-out');
     container.classList.add('fade-in');
-    
+
     // Remove fade-in class after animation to allow clean fade-out later
     setTimeout(() => {
         container.classList.remove('fade-in');
@@ -107,7 +109,7 @@ function handleNextQuestion() {
         // Transition effect
         const container = document.querySelector('.question-container');
         container.classList.add('fade-out');
-        
+
         setTimeout(() => {
             loadQuestion();
         }, 400);
@@ -146,4 +148,17 @@ function restartQuiz() {
     welcomeScreen.classList.add('active');
     currentQuestionIndex = 0;
     score = 0;
+}
+
+function toggleTheme() {
+    const body = document.body;
+    const icon = themeToggle.querySelector('.icon');
+
+    if (body.getAttribute('data-theme') === 'light') {
+        body.removeAttribute('data-theme');
+        icon.textContent = '☀️';
+    } else {
+        body.setAttribute('data-theme', 'light');
+        icon.textContent = '🌙';
+    }
 }
